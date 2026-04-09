@@ -1,0 +1,231 @@
+/* ==================== Design Tokens ==================== */
+:root {
+  /* 背景色 */
+  --bg-base: #141414;
+  --bg-panel: #1f1f1f;
+  --bg-header: #1e1f22;
+  --bg-dark: #000000;
+  --bg-hover: #2a2a2a;
+  --bg-active: rgba(22, 119, 255, 0.15);
+
+  /* 边框色 */
+  --border-color: #303030;
+  --border-light: #333333;
+  --border-dark: #444444;
+
+  /* 文字色 */
+  --text-primary: #e5e5e5;
+  --text-secondary: #a6a6a6;
+  --text-muted: #666666;
+  --text-light: #888888;
+
+  /* 主题色 */
+  --primary-color: #1677ff;
+  --primary-hover: #4096ff;
+  --brand-color: #f04e23;
+  --success-color: #52c41a;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+
+  /* 输入色 */
+  --input-bg: #141414;
+
+  /* 尺寸 */
+  --header-h: 50px;
+  --tabs-h: 38px;
+  --footer-h: 32px;
+  --side-w-left: 300px;
+  --side-w-right: 320px;
+
+  /* 圆角 */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* 阴影 */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* ==================== Reset ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-dark);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ==================== 通用类 ==================== */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 按钮 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn:hover {
+  background: var(--border-light);
+  border-color: var(--border-dark);
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+/* 输入框 */
+.input {
+  width: 100%;
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+  background: var(--input-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: var(--primary-color);
+}
+
+/* 选择框 */
+.select {
+  width: 100%;
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+  background: var(--input-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  outline: none;
+  cursor: pointer;
+}
+
+/* 开关 */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border-dark);
+  transition: 0.3s;
+  border-radius: 20px;
+}
+
+.switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.switch input:checked + .slider {
+  background-color: var(--primary-color);
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(16px);
+}
+
+/* 分隔线 */
+.divider {
+  width: 1px;
+  height: 16px;
+  background: var(--border-light);
+}
+
+/* 面板标题 */
+.panel-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.panel-subtitle {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* 区域通用样式 */
+.panel-area {
+  background: var(--bg-panel);
+  overflow: hidden;
+}
