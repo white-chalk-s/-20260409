@@ -1,39 +1,39 @@
 <template>
   <div class="app-container">
-    <!-- 1. 标题展示区 -->
-    <TitlePanel class="area-title" />
+    <!-- 顶部区域：标题 + 导航 + 操作按钮 -->
+    <div class="header-area">
+      <TitlePanel class="area-title" />
+      <TabPanel class="area-tabs" @change="handleTabChange" @sub-change="handleSubTabChange" />
+      <SettingsPanel class="area-settings" />
+    </div>
 
-    <!-- 2. 状态 Tab 切换区 -->
-    <TabPanel
-      class="area-tabs"
-      @change="handleTabChange"
-      @sub-change="handleSubTabChange"
-    />
+    <!-- 内容区域 -->
+    <div class="content-area">
+      <!-- 3. 对象区 -->
+      <ObjectPanel
+        class="area-object"
+        :tab-id="activeTab"
+        :sub-tab-id="activeSubTab"
+        @device-change="handleDeviceChange"
+      />
 
-    <!-- 3. 对象区 -->
-    <ObjectPanel
-      class="area-object"
-      :tab-id="activeTab"
-      :sub-tab-id="activeSubTab"
-      @device-change="handleDeviceChange"
-    />
+      <!-- 5. 工具栏区 + 7. 三维场景区 -->
+      <ScenePanel
+        class="area-scene"
+        :selected-device="selectedDevice"
+        :tab-id="activeTab"
+        :sub-tab-id="activeSubTab"
+        @device-change="handleDeviceChange"
+      />
 
-    <!-- 4. 默认设置区 -->
-    <SettingsPanel class="area-settings" />
-
-    <!-- 5. 工具栏区 + 7. 三维场景区 -->
-    <ScenePanel
-      class="area-scene"
-      :selected-device="selectedDevice"
-    />
-
-    <!-- 6. 属性配置区 -->
-    <PropertyPanel
-      class="area-property"
-      :tab-id="activeTab"
-      :sub-tab-id="activeSubTab"
-      :selected-device="selectedDevice"
-    />
+      <!-- 6. 属性配置区 -->
+      <PropertyPanel
+        class="area-property"
+        :tab-id="activeTab"
+        :sub-tab-id="activeSubTab"
+        :selected-device="selectedDevice"
+      />
+    </div>
 
     <!-- 8. 杂七杂八信息区 -->
     <FooterPanel class="area-footer" />
@@ -69,24 +69,58 @@ function handleDeviceChange(device) {
 
 <style scoped>
 .app-container {
-  display: grid;
-  grid-template-columns: 300px 1fr 320px;
-  grid-template-rows: 50px 38px 1fr 32px;
-  grid-template-areas:
-    "title   tabs    settings"
-    "title   tabs    settings"
-    "object  scene   property"
-    "footer  footer  footer";
+  display: flex;
+  flex-direction: column;
   height: 100vh;
   background: var(--border-color);
-  gap: 1px;
 }
 
-.area-title { grid-area: title; }
-.area-tabs { grid-area: tabs; }
-.area-object { grid-area: object; }
-.area-settings { grid-area: settings; }
-.area-scene { grid-area: scene; }
-.area-property { grid-area: property; }
-.area-footer { grid-area: footer; }
+.header-area {
+  display: grid;
+  grid-template-columns: 300px 1fr 300px;
+  grid-template-rows: 50px 38px;
+  flex-shrink: 0;
+}
+
+.content-area {
+  display: grid;
+  grid-template-columns: 300px 1fr 320px;
+  grid-template-rows: 1fr;
+  flex: 1;
+  overflow: hidden;
+}
+
+.area-title {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.area-tabs {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.area-settings {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+}
+
+.area-object {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.area-scene {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.area-property {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.area-footer {
+  flex-shrink: 0;
+}
 </style>

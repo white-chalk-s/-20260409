@@ -277,7 +277,7 @@
     </div>
 
     <!-- 灯光视图 -->
-    <div v-if="subTabId === 'light'" class="view-content">
+    <div v-if="tabId === 'scene' && subTabId === 'light'" class="view-content">
       <div class="light-tree">
         <div class="tree-node">
           <span class="node-icon">☀️</span>
@@ -295,11 +295,136 @@
     </div>
 
     <!-- 特效视图 -->
-    <div v-if="subTabId === 'effect'" class="view-content">
+    <div v-if="tabId === 'scene' && subTabId === 'effect'" class="view-content">
       <div class="empty-state">
         <div class="empty-icon">✨</div>
         <div class="empty-text">特效配置</div>
         <div class="empty-hint">暂无特效数据</div>
+      </div>
+    </div>
+
+    <!-- 状态-图层视图 -->
+    <div v-if="tabId === 'status' && subTabId === 'layer'" class="view-content">
+      <div class="empty-state">
+        <div class="empty-icon">📊</div>
+        <div class="empty-text">图层状态配置</div>
+        <div class="empty-hint">暂无图层数据</div>
+      </div>
+    </div>
+
+    <!-- 资产tab内容 -->
+    <div v-if="tabId === 'asset'" class="view-content asset-view">
+      <!-- 设备子Tab -->
+      <div class="asset-tabs" v-if="subTabId === 'device'">
+        <div
+          v-for="devTab in deviceSubTabs"
+          :key="devTab.id"
+          :class="['asset-tab-item', { active: activeAssetTab === devTab.id }]"
+          @click="activeAssetTab = devTab.id"
+        >
+          {{ devTab.label }}
+        </div>
+      </div>
+
+      <!-- 设备视图 -->
+      <div v-if="subTabId === 'device'" class="asset-device-content">
+        <div class="asset-section-title">设备模型 (拖拽到场景)</div>
+        <div class="device-grid">
+          <div
+            v-for="dev in deviceModels"
+            :key="dev.id"
+            class="device-card"
+            draggable="true"
+            @dragstart="handleDragStart($event, dev)"
+          >
+            <div class="device-preview">
+              <div class="device-icon">{{ dev.icon }}</div>
+            </div>
+            <div class="device-name">{{ dev.name }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 车站视图 -->
+      <div v-if="subTabId === 'station'" class="asset-content">
+        <div class="empty-state">
+          <div class="empty-icon">🏢</div>
+          <div class="empty-text">车站资产</div>
+          <div class="empty-hint">车站数据</div>
+        </div>
+      </div>
+
+      <!-- 材质视图 -->
+      <div v-if="subTabId === 'material'" class="asset-content">
+        <div class="empty-state">
+          <div class="empty-icon">🎨</div>
+          <div class="empty-text">材质资产</div>
+          <div class="empty-hint">材质数据</div>
+        </div>
+      </div>
+
+      <!-- 几何体视图 -->
+      <div v-if="subTabId === 'geometry'" class="asset-content">
+        <div class="empty-state">
+          <div class="empty-icon">📐</div>
+          <div class="empty-text">几何体资产</div>
+          <div class="empty-hint">几何体数据</div>
+        </div>
+      </div>
+
+      <!-- 图标视图 -->
+      <div v-if="subTabId === 'icon'" class="asset-content">
+        <div class="empty-state">
+          <div class="empty-icon">🏷️</div>
+          <div class="empty-text">图标资产</div>
+          <div class="empty-hint">图标数据</div>
+        </div>
+      </div>
+
+      <!-- 测试模型视图 -->
+      <div v-if="subTabId === 'testModel'" class="asset-content">
+        <div class="empty-state">
+          <div class="empty-icon">🧪</div>
+          <div class="empty-text">测试模型</div>
+          <div class="empty-hint">测试模型数据</div>
+        </div>
+      </div>
+
+      <!-- 测试文件库视图 -->
+      <div v-if="subTabId === 'testFile'" class="asset-content">
+        <div class="empty-state">
+          <div class="empty-icon">📁</div>
+          <div class="empty-text">测试文件库</div>
+          <div class="empty-hint">测试文件数据</div>
+        </div>
+      </div>
+
+      <!-- 工具tab内容 -->
+      <div v-if="tabId === 'tool'" class="view-content tool-view">
+        <!-- 路径规划 -->
+        <div v-if="subTabId === 'path'" class="tool-path-content">
+          <div class="panel-header">
+            <div class="panel-title">路径规划属性</div>
+            <div class="version-tag">V1.0</div>
+          </div>
+          <div class="config-group">
+            <div class="instruction">
+              <p style="color: #bbb; margin-bottom: 4px;">操作指引：</p>
+              1. 在场景中点击放置路径点<br>
+              2. 自动生成最短巡检路径<br>
+              3. 支持设置节点停顿时间
+            </div>
+          </div>
+        </div>
+
+        <!-- 编辑器 -->
+        <div v-if="subTabId === 'editor'" class="tool-editor-content">
+          <div class="empty-state">
+            <div class="empty-icon">🛠️</div>
+            <div class="empty-text">编辑器工具</div>
+            <div class="empty-hint">编辑器功能开发中</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -323,6 +448,39 @@ const emit = defineEmits(['device-change'])
 
 // 左侧子Tab
 const activeLeftTab = ref('station')
+
+// 资产模块相关
+const activeAssetTab = ref('doorAccess') // 默认门禁系统
+
+const deviceSubTabs = ref([
+  { id: 'doorAccess', label: '门禁系统' },
+  { id: 'fireProtection', label: '消防系统' },
+  { id: 'power', label: '供配电系统' },
+  { id: 'lighting', label: '照明系统' },
+  { id: 'ventilation', label: '通风空调系统' },
+  { id: 'elevator', label: '电梯系统' }
+])
+
+// 设备模型数据（支持拖拽）
+const deviceModels = ref([
+  { id: 'dm-1', name: 'AGM闸机', icon: '🚪' },
+  { id: 'dm-2', name: 'TVM售票机', icon: '🎫' },
+  { id: 'dm-3', name: '球机摄像头', icon: '📷' },
+  { id: 'dm-4', name: '枪机摄像头', icon: '📹' },
+  { id: 'dm-5', name: '温湿度传感器', icon: '🌡️' },
+  { id: 'dm-6', name: '烟感探测器', icon: '🚬' },
+  { id: 'dm-7', name: '紧急按钮', icon: '🔴' },
+  { id: 'dm-8', name: '声光报警器', icon: '🔔' },
+  { id: 'dm-9', name: '疏散指示灯', icon: '➡️' },
+  { id: 'dm-10', name: '消防泵', icon: '🔧' },
+  { id: 'dm-11', name: '配电箱', icon: '⚡' },
+  { id: 'dm-12', name: '照明灯', icon: '💡' }
+])
+
+function handleDragStart(event, device) {
+  event.dataTransfer.setData('device', JSON.stringify(device))
+  event.dataTransfer.effectAllowed = 'copy'
+}
 
 // 维度切换
 const activeDimension = ref('space')
@@ -824,5 +982,485 @@ function toggleVisible(device) {
 .node-item.folder {
   color: #f1c40f;
   font-weight: 500;
+}
+
+/* 状态视图 */
+.status-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.status-view .section-title {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 12px;
+  border-left: 3px solid var(--primary-color);
+  padding-left: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: 16px 12px 12px 12px;
+}
+
+.status-view .view-list {
+  background: #111;
+  border: 1px solid #333;
+  border-radius: var(--radius-sm);
+  margin: 0 12px 16px 12px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.status-view .view-row {
+  padding: 12px;
+  font-size: 13px;
+  border-bottom: 1px solid #222;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.status-view .view-row:last-child {
+  border-bottom: none;
+}
+
+.status-view .view-row:hover {
+  background: #1a1a1a;
+}
+
+.status-view .view-row.active {
+  background: rgba(22, 119, 255, 0.15);
+  color: #fff;
+  font-weight: bold;
+  border-left: 3px solid var(--primary-color);
+}
+
+.status-view .view-icon {
+  margin-right: 10px;
+}
+
+.status-view .view-name {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.status-view .control-area {
+  background: #181818;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid #262626;
+  margin: 0 12px 16px 12px;
+}
+
+.status-view .ctrl-group-title {
+  font-size: 11px;
+  color: #555;
+  margin-bottom: 12px;
+  text-align: center;
+  border-bottom: 1px solid #262626;
+  padding-bottom: 8px;
+  font-weight: bold;
+}
+
+.status-view .coord-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.status-view .coord-item {
+  flex: 1;
+}
+
+.status-view .coord-label {
+  display: block;
+  font-size: 10px;
+  color: #666;
+  margin-bottom: 4px;
+  text-indent: 2px;
+}
+
+.status-view .coord-input {
+  width: 100%;
+  background: #000;
+  border: 1px solid #333;
+  color: var(--success-color);
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 2px;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  outline: none;
+}
+
+.status-view .coord-input:focus {
+  border-color: var(--primary-color);
+}
+
+.status-view .action-box {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.status-view .btn-secondary {
+  width: 100%;
+  height: 36px;
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  color: #ccc;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.status-view .btn-secondary:hover {
+  background: #333;
+  color: #fff;
+}
+
+/* 漫游路径面板 */
+.status-view .panel-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-bottom: 1px solid #333;
+}
+
+.status-view .panel-header {
+  padding: 10px 14px;
+  background: #252526;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #111;
+}
+
+.status-view .panel-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.status-view .tool-icons {
+  display: flex;
+  gap: 12px;
+  color: #888;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.status-view .tool-icons span:hover {
+  color: var(--primary-color);
+}
+
+.status-view .list-container {
+  flex: 1;
+  overflow-y: auto;
+  background: #181818;
+  padding: 2px 0;
+}
+
+.status-view .list-item {
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-bottom: 1px solid #222;
+}
+
+.status-view .list-item:hover {
+  background: #222;
+}
+
+.status-view .list-item.selected {
+  background: #0d3d6b;
+  border-left: 3px solid var(--primary-color);
+}
+
+.status-view .item-name {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #ddd;
+  font-size: 12px;
+  outline: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-view .item-icon {
+  margin-right: 8px;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.status-view .config-detail-area {
+  flex-shrink: 0;
+  background: #1e1e1e;
+  border-top: 2px solid #333;
+  padding: 14px;
+}
+
+.status-view .config-title {
+  margin-bottom: 10px;
+  font-size: 11px;
+  color: #666;
+  font-weight: bold;
+}
+
+.status-view .config-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.status-view .config-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-view .config-label {
+  width: 55px;
+  font-size: 12px;
+  color: #888;
+  flex-shrink: 0;
+}
+
+.status-view .config-inputs {
+  flex: 1;
+  display: flex;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.status-view .input-box {
+  flex: 1;
+  min-width: 0;
+  background: #111;
+  border: 1px solid #333;
+  color: #fff;
+  height: 24px;
+  padding: 0 4px;
+  font-size: 11px;
+  border-radius: 2px;
+  font-family: monospace;
+}
+
+.status-view .input-box:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.status-view .config-time {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.status-view .input-box.small {
+  width: 45px;
+  flex: none;
+}
+
+.status-view .time-unit {
+  font-size: 10px;
+  color: #444;
+  margin-left: 2px;
+}
+
+.status-view .fov-value {
+  font-size: 11px;
+  color: #555;
+  width: 24px;
+}
+
+.status-view .btn-full {
+  width: 100%;
+  padding: 8px;
+  background: #722ed1;
+  border: none;
+  color: #fff;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 8px;
+  font-size: 12px;
+  transition: background 0.2s;
+}
+
+.status-view .btn-full:hover {
+  background: #8247d5;
+}
+
+/* 资产模块样式 */
+.asset-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.asset-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-panel);
+}
+
+.asset-tab-item {
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: var(--bg-base);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.asset-tab-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.asset-tab-item.active {
+  background: var(--primary-color);
+  color: #fff;
+  border-color: var(--primary-color);
+}
+
+.asset-device-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.asset-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.device-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.device-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  cursor: grab;
+  transition: all 0.2s;
+}
+
+.device-card:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(22, 119, 255, 0.2);
+}
+
+.device-card:active {
+  cursor: grabbing;
+}
+
+.device-preview {
+  width: 100%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, #333 0%, #111 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.device-icon {
+  font-size: 32px;
+}
+
+.device-name {
+  padding: 8px;
+  font-size: 11px;
+  text-align: center;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.asset-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 工具模块样式 */
+.tool-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tool-path-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.tool-path-content .panel-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tool-path-content .panel-title {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.tool-path-content .version-tag {
+  color: var(--primary-color);
+  font-size: 12px;
+}
+
+.tool-path-content .config-group {
+  padding: 20px;
+}
+
+.tool-path-content .instruction {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  padding: 12px;
+  line-height: 1.6;
+  color: #888;
+  border: 1px solid #222;
+}
+
+.tool-editor-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

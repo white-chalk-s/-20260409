@@ -2,38 +2,38 @@
   <div class="footer-panel panel-area">
     <div class="info-group">
       <div class="info-item">
-        <span class="label">三角面:</span>
+        <span>Render:</span>
+        <span class="value">WebGL2</span>
+      </div>
+      <div class="divider"></div>
+      <div class="info-item">
+        <span>FPS:</span>
+        <span class="value">60</span>
+      </div>
+      <div class="divider"></div>
+      <div class="info-item">
+        <span>三角面:</span>
         <span class="value">{{ stats.triangles }}</span>
       </div>
       <div class="divider"></div>
       <div class="info-item">
-        <span class="label">Draw Call:</span>
+        <span>Draw Call:</span>
         <span class="value">{{ stats.drawCalls }}</span>
       </div>
       <div class="divider"></div>
       <div class="info-item">
-        <span class="label">纹理占用:</span>
+        <span>纹理占用:</span>
         <span class="value">{{ stats.textureSize }}</span>
       </div>
       <div class="divider"></div>
       <div class="info-item">
-        <span class="label">世界坐标:</span>
+        <span>世界坐标:</span>
         <span class="value">X: {{ coords.x }}  Y: {{ coords.y }}  Z: {{ coords.z }}</span>
-      </div>
-      <div class="divider"></div>
-      <div class="info-item">
-        <span class="label">相机高度:</span>
-        <span class="value">{{ stats.cameraHeight }}</span>
-      </div>
-      <div class="divider"></div>
-      <div class="info-item">
-        <span class="label">缩放比例:</span>
-        <span class="value">{{ stats.zoom }}</span>
       </div>
     </div>
     <div class="status-message">
       <span class="status-dot"></span>
-      {{ statusText }}
+      <span>场景状态: {{ statusText }}</span>
     </div>
   </div>
 </template>
@@ -44,9 +44,7 @@ import { ref } from 'vue'
 const stats = ref({
   triangles: '12,456',
   drawCalls: '128',
-  textureSize: '256.8 MB',
-  cameraHeight: '15.0m',
-  zoom: '1.0x'
+  textureSize: '256.8 MB'
 })
 
 const coords = ref({
@@ -66,6 +64,7 @@ const statusText = ref('就绪')
   padding: 0 16px;
   background: var(--bg-header);
   border-top: 1px solid var(--border-color);
+  height: 32px;
 }
 
 .info-group {
@@ -79,25 +78,24 @@ const statusText = ref('就绪')
   align-items: center;
   gap: 6px;
   font-size: 11px;
-}
-
-.info-item .label {
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .info-item .value {
-  color: var(--text-secondary);
+  color: var(--text-muted);
   font-family: "SF Mono", "Consolas", monospace;
+}
+
+.divider {
+  width: 1px;
+  height: 12px;
+  background: var(--border-color);
 }
 
 .status-message {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 12px;
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  border-radius: var(--radius-sm);
   font-size: 11px;
   color: var(--success-color);
 }

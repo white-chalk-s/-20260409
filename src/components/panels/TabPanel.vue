@@ -35,6 +35,42 @@
         {{ subTab.label }}
       </div>
     </div>
+
+    <!-- 状态子Tab -->
+    <div class="sub-tabs" v-if="activeMainTab === 'status'">
+      <div
+        v-for="subTab in statusSubTabs"
+        :key="subTab.id"
+        :class="['sub-tab-item', { active: activeSubTab === subTab.id }]"
+        @click="handleSubTabClick(subTab.id)"
+      >
+        {{ subTab.label }}
+      </div>
+    </div>
+
+    <!-- 资产子Tab -->
+    <div class="sub-tabs" v-if="activeMainTab === 'asset'">
+      <div
+        v-for="subTab in assetSubTabs"
+        :key="subTab.id"
+        :class="['sub-tab-item', { active: activeSubTab === subTab.id }]"
+        @click="handleSubTabClick(subTab.id)"
+      >
+        {{ subTab.label }}
+      </div>
+    </div>
+
+    <!-- 工具子Tab -->
+    <div class="sub-tabs" v-if="activeMainTab === 'tool'">
+      <div
+        v-for="subTab in toolSubTabs"
+        :key="subTab.id"
+        :class="['sub-tab-item', { active: activeSubTab === subTab.id }]"
+        @click="handleSubTabClick(subTab.id)"
+      >
+        {{ subTab.label }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -64,6 +100,30 @@ const modelSubTabs = [
   { id: 'animation', label: '动画' }
 ]
 
+// 状态子Tab
+const statusSubTabs = [
+  { id: 'view', label: '视角' },
+  { id: 'roam', label: '漫游' },
+  { id: 'layer', label: '状态' }
+]
+
+// 资产子Tab
+const assetSubTabs = [
+  { id: 'device', label: '设备' },
+  { id: 'station', label: '车站' },
+  { id: 'material', label: '材质' },
+  { id: 'geometry', label: '几何体' },
+  { id: 'icon', label: '图标' },
+  { id: 'testModel', label: '测试模型' },
+  { id: 'testFile', label: '测试文件库' }
+]
+
+// 工具子Tab
+const toolSubTabs = [
+  { id: 'path', label: '路径规划' },
+  { id: 'editor', label: '编辑器' }
+]
+
 const activeMainTab = ref('scene')
 const activeSubTab = ref('object')
 
@@ -74,6 +134,12 @@ function handleTabClick(tabId) {
     activeSubTab.value = 'object'
   } else if (tabId === 'model') {
     activeSubTab.value = 'material'
+  } else if (tabId === 'status') {
+    activeSubTab.value = 'view'
+  } else if (tabId === 'asset') {
+    activeSubTab.value = 'device'
+  } else if (tabId === 'tool') {
+    activeSubTab.value = 'path'
   }
   emit('change', tabId)
 }
@@ -89,27 +155,29 @@ function handleSubTabClick(subTabId) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 8px 16px;
-  background: var(--bg-header);
-  border-bottom: 1px solid var(--border-color);
+  justify-content: center;
+  background: #181818;
+  border-bottom: 1px solid #222;
+  padding: 0;
+  height: 100%;
 }
 
 .main-tabs {
   display: flex;
   gap: 4px;
-  background: var(--bg-base);
+  background: #141414;
   padding: 3px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  border: 1px solid #2a2a2a;
 }
 
 .tab-item {
-  padding: 5px 18px;
+  padding: 4px 16px;
   font-size: 13px;
   color: var(--text-secondary);
-  border-radius: var(--radius-sm);
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: 0.2s;
 }
 
 .tab-item:hover {

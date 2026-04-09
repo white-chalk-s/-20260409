@@ -55,22 +55,23 @@
     </div>
 
     <!-- 7. 三维场景区 -->
-    <div class="scene-viewport" :class="{ 'has-focus': focusedDevice }">
+    <div
+      class="scene-viewport"
+      :class="{
+        'has-focus': focusedDevice,
+        'status-view': isStatusTab,
+        'drag-over': isDragging,
+        'tool-view': isToolTab
+      }"
+      @dragover.prevent="handleDragOver"
+      @dragleave="handleDragLeave"
+      @drop="handleDrop"
+    >
       <div class="scene-placeholder">
-        <div class="grid-floor"></div>
-
-        <!-- 默认模型（未选中设备） -->
-        <div v-if="!focusedDevice" class="mock-model"></div>
-
-        <!-- 聚焦设备时的模型 -->
-        <div v-else class="focused-model">
-          <div class="model-box" :class="{ locked: focusedDevice.locked }">
-            {{ focusedDevice.name }}
-          </div>
-        </div>
-
+        <div v-if="isToolTab" class="grid-overlay"></div>
+        <div v-if="isToolTab" class="viewport-label">3D VIEWPORT</div>
         <!-- 默认标注 -->
-        <template v-if="!focusedDevice">
+        <template v-if="!focusedDevice && !isStatusTab && !isToolTab">
           <div class="annotation annotation-1">楼宇 A 栋</div>
           <div class="annotation annotation-2">传感器节点</div>
           <div class="annotation annotation-3">设备区域</div>
@@ -88,20 +89,39 @@
             </div>
           </div>
         </template>
+
+        <!-- 状态tab坐标显示 -->
+        <template v-if="isStatusTab">
+          <div class="coord-overlay">
+            CAM_XYZ: [142.52, 65.88, -10.04] | FOV: 60.0°
+          </div>
+        </template>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 
 const props = defineProps({
   selectedDevice: {
     type: Object,
     default: null
+  },
+  tabId: {
+    type: String,
+    default: 'scene'
+  },
+  subTabId: {
+    type: String,
+    default: 'object'
   }
 })
+
+const emit = defineEmits(['device-change'])
+
+const isDragging = ref(false)
 
 const activeTool = ref('move')
 const moveStep = ref('1.0')
@@ -109,6 +129,12 @@ const rotateStep = ref('15°')
 const scaleStep = ref('0.1')
 
 const focusedDevice = ref(null)
+
+// 是否是状态tab
+const isStatusTab = computed(() => props.tabId === 'status')
+
+// 是否是工具tab
+const isToolTab = computed(() => props.tabId === 'tool')
 
 const transformTools = [
   { id: 'move', icon: '✥', label: '平移' },
@@ -124,6 +150,25 @@ watch(() => props.selectedDevice, (newDevice) => {
 function handleNew() {
   // 新增功能 - 跳转到资产库
   console.log('点击新增按钮')
+}
+
+function handleDragOver(event) {
+  event.dataTransfer.dropEffect = 'copy'
+  isDragging.value = true
+}
+
+function handleDragLeave() {
+  isDragging.value = false
+}
+
+function handleDrop(event) {
+  isDragging.value = false
+  const deviceData = event.dataTransfer.getData('device')
+  if (deviceData) {
+    const device = JSON.parse(deviceData)
+    focusedDevice.value = device
+    emit('device-change', device)
+  }
 }
 </script>
 
@@ -249,46 +294,17 @@ function handleNew() {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: radial-gradient(circle at center, #2a2a2a 0%, #111 100%);
+  background: url('https://minimax-algeng-chat-tts.oss-cn-wulanchabu.aliyuncs.com/ccv2%2F2026-04-09%2FMiniMax-M2.5%2F2031966486800633944%2F7d5cd02b21c1ebf6634589a79125d08a004d30d45a455b927db18a3aa67239f4..png?Expires=1775800594&OSSAccessKeyId=LTAI5tGLnRTkBjLuYPjNcKQ8&Signature=SXjAUIy6N7Jy7044AOWwcQfxVEg%3D') center/cover no-repeat;
 }
 
 .scene-viewport.has-focus {
-  background: radial-gradient(circle at center, #1a2a3a 0%, #0a1520 100%);
+  background: url('https://minimax-algeng-chat-tts.oss-cn-wulanchabu.aliyuncs.com/ccv2%2F2026-04-09%2FMiniMax-M2.5%2F2031966486800633944%2F7d5cd02b21c1ebf6634589a79125d08a004d30d45a455b927db18a3aa67239f4..png?Expires=1775800594&OSSAccessKeyId=LTAI5tGLnRTkBjLuYPjNcKQ8&Signature=SXjAUIy6N7Jy7044AOWwcQfxVEg%3D') center/cover no-repeat, rgba(26, 42, 58, 0.5);
 }
 
 .scene-placeholder {
   width: 100%;
   height: 100%;
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.grid-floor {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 40%;
-  background: linear-gradient(to bottom, transparent, rgba(59, 130, 246, 0.08));
-  transform: perspective(500px) rotateX(60deg);
-  transform-origin: bottom;
-}
-
-.mock-model {
-  width: 200px;
-  height: 200px;
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-  border-radius: var(--radius-md);
-  box-shadow: 0 20px 60px rgba(59, 130, 246, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 14px;
-  position: relative;
-  z-index: 1;
 }
 
 .focused-model {
@@ -385,5 +401,71 @@ function handleNew() {
 
 .status-hidden {
   color: var(--text-muted);
+}
+
+/* 状态tab视图 */
+.scene-viewport.status-view {
+  background: url('https://minimax-algeng-chat-tts.oss-cn-wulanchabu.aliyuncs.com/ccv2%2F2026-04-09%2FMiniMax-M2.5%2F2031966486800633944%2F7d5cd02b21c1ebf6634589a79125d08a004d30d45a455b927db18a3aa67239f4..png?Expires=1775800594&OSSAccessKeyId=LTAI5tGLnRTkBjLuYPjNcKQ8&Signature=SXjAUIy6N7Jy7044AOWwcQfxVEg%3D') center/cover no-repeat;
+}
+
+/* 工具tab视图 */
+.scene-viewport.tool-view {
+  background: url('https://minimax-algeng-chat-tts.oss-cn-wulanchabu.aliyuncs.com/ccv2%2F2026-04-09%2FMiniMax-M2.5%2F2031966486800633944%2F7d5cd02b21c1ebf6634589a79125d08a004d30d45a455b927db18a3aa67239f4..png?Expires=1775800594&OSSAccessKeyId=LTAI5tGLnRTkBjLuYPjNcKQ8&Signature=SXjAUIy6N7Jy7044AOWwcQfxVEg%3D') center/cover no-repeat, #08080a;
+}
+
+.scene-viewport.tool-view .scene-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, #222 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.5;
+}
+
+.viewport-label {
+  position: relative;
+  z-index: 1;
+  font-size: 48px;
+  font-weight: 900;
+  color: #1a1a1e;
+  letter-spacing: 10px;
+  pointer-events: none;
+}
+
+.scene-viewport.drag-over {
+  background: url('https://minimax-algeng-chat-tts.oss-cn-wulanchabu.aliyuncs.com/ccv2%2F2026-04-09%2FMiniMax-M2.5%2F2031966486800633944%2F7d5cd02b21c1ebf6634589a79125d08a004d30d45a455b927db18a3aa67239f4..png?Expires=1775800594&OSSAccessKeyId=LTAI5tGLnRTkBjLuYPjNcKQ8&Signature=SXjAUIy6N7Jy7044AOWwcQfxVEg%3D') center/cover no-repeat, rgba(22, 119, 255, 0.2);
+  box-shadow: inset 0 0 30px rgba(22, 119, 255, 0.3);
+  border: 2px dashed var(--primary-color);
+}
+
+.scene-viewport.status-view .scene-placeholder::after {
+  content: '3D REALTIME VIEWPORT';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #333;
+  font-weight: bold;
+  font-size: 24px;
+  letter-spacing: 2px;
+}
+
+.scene-viewport.status-view .coord-overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: var(--success-color);
+  border: 1px solid #444;
+  backdrop-filter: blur(4px);
 }
 </style>

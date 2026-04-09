@@ -4,10 +4,9 @@
       <div class="brand-logo">PCI 佳都</div>
       <div class="brand-text">
         <div class="brand-title">三维场景编辑器</div>
-        <div class="brand-subtitle">数字孪生平台</div>
+        <div class="brand-subtitle">两江影视城站AFC智能运维</div>
       </div>
     </div>
-    <div class="status-tag">原型设计中</div>
   </div>
 </template>
 
@@ -18,10 +17,10 @@
 .title-panel {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-  background: var(--bg-header);
+  padding: 0 16px 0 8px;
+  background: linear-gradient(90deg, #242528 0%, #1a1a1a 100%);
   border-bottom: 1px solid var(--border-color);
+  height: 100%;
 }
 
 .brand-info {
@@ -31,10 +30,12 @@
 }
 
 .brand-logo {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 900;
   color: var(--brand-color);
+  font-family: "Arial Black", Impact, sans-serif;
   letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
 }
 
 .brand-text {
@@ -43,32 +44,16 @@
 }
 
 .brand-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .brand-subtitle {
   font-size: 11px;
-  color: var(--text-secondary);
-}
-
-.status-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  background: rgba(22, 119, 255, 0.15);
-  color: var(--primary-color);
-  font-size: 11px;
-  border-radius: 12px;
-}
-
-.status-tag::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  background: var(--primary-color);
-  border-radius: 50%;
+  color: #cccccc;
+  letter-spacing: 0.5px;
 }
 </style>
