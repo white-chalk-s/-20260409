@@ -109,8 +109,7 @@ const statusSubTabs = [
 
 // 资产子Tab
 const assetSubTabs = [
-  { id: 'device', label: '设备' },
-  { id: 'station', label: '车站' },
+  { id: 'device', label: '模型' },
   { id: 'material', label: '材质' },
   { id: 'geometry', label: '几何体' },
   { id: 'icon', label: '图标' },

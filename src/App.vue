@@ -77,17 +77,19 @@ function handleDeviceChange(device) {
 
 .header-area {
   display: grid;
-  grid-template-columns: 300px 1fr 300px;
+  grid-template-columns: 20% 60% 20%;
   grid-template-rows: 50px 38px;
   flex-shrink: 0;
+  overflow: visible;
+  z-index: 100;
 }
 
 .content-area {
   display: grid;
-  grid-template-columns: 300px 1fr 320px;
+  grid-template-columns: 20% 60% 20%;
   grid-template-rows: 1fr;
   flex: 1;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .area-title {
